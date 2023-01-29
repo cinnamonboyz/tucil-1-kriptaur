@@ -80,6 +80,43 @@ def decrypt_extended_vigenere(ciphertext, key):
     plainteks = numtochar_ascii(plainteks)
     return ''.join(plainteks)
 
+# one-time pad
+import string
+import random
+
+def generate_random_key(length):
+    key = [random.choice(string.ascii_uppercase) for i in range(length)]
+    return ''.join(key)
+
+def save_key(key, filename):
+    with open(filename, 'w') as f:
+        f.write(key)
+
+def read_key(filename):
+    with open(filename, 'r') as f:
+        key = f.read()
+    return key
+
+def encrypt_otp(plainteks, key):
+    p = chartonum(plainteks)
+    k = chartonum(key)
+    ciphertext = []
+    for i in range(len(p)):
+        num = (p[i] + k[i]) % 26
+        ciphertext.append(num)
+    ciphertext = numtochar(ciphertext)
+    return ''.join(ciphertext)
+
+def decrypt_otp(ciphertext, key):
+    c = chartonum(ciphertext)
+    k = chartonum(key)
+    plainteks = []
+    for i in range(len(c)):
+        num = (c[i] - k[i]) % 26
+        plainteks.append(num)
+    plainteks = numtochar(plainteks)
+    return ''.join(plainteks)
+
 # main program
 program = input("Pilih program: ")
 if program == "1":
@@ -145,15 +182,18 @@ if program == "4":
     print("1. Enkripsi")
     print("2. Dekripsi")
     mode = input("Pilih mode: ")
-    
+
+
     if mode == "1":
+        otpkey = generate_random_key(100000)
+        save_key(otpkey, 'otp_key.txt')
         plainteks = input("Masukkan plainteks: ").upper()
-        key = input("Masukkan kunci: ").upper()
-        ## ciphertext = encrypt_one_time_pad(plainteks, key)
+        key = read_key('otp_key.txt')
+        ciphertext = encrypt_otp(plainteks, key)
         print("Hasil enkripsi: " + ciphertext)
     
     if mode == "2":
         ciphertext = input("Masukkan ciphertext: ").upper()
-        key = input("Masukkan kunci: ").upper()
-        ## plainteks = decrypt_one_time_pad(ciphertext, key)
+        key = read_key('otp_key.txt')
+        plainteks = decrypt_otp(ciphertext, key)
         print("Hasil dekripsi: " + plainteks)
