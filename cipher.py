@@ -183,10 +183,11 @@ if program == "4":
     print("2. Dekripsi")
     mode = input("Pilih mode: ")
 
+    # generate randome one time pad key
+    otpkey = generate_random_key(100000)
+    save_key(otpkey, 'otp_key.txt')
 
     if mode == "1":
-        otpkey = generate_random_key(100000)
-        save_key(otpkey, 'otp_key.txt')
         plainteks = input("Masukkan plainteks: ").upper()
         key = read_key('otp_key.txt')
         ciphertext = encrypt_otp(plainteks, key)
