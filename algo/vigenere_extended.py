@@ -44,10 +44,10 @@ def extended_vigenere_decrypt(cipher_text, key):
     return plain
 
 if __name__ == "__main__":
-    cipher = extended_vigenere_encrypt("jeyy ganteng", "abc")
+    cipher = extended_vigenere_encrypt("rezaa", "abc")
     print(cipher)
 
-    plain = extended_vigenere_decrypt("«§¼ºbª¢°·¦°ª", "abc")
+    plain = extended_vigenere_decrypt("³§½¢£", "abc")
     print(plain)
     #print(plain)
     # with open("tucil 1/KTM.jpg", "rb") as save: 
