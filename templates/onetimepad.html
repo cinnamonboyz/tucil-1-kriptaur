@@ -89,7 +89,7 @@
                 return fetch('/otp_encrypt', {
                     method: 'POST',
                     body: data
-                })
+                });
             })
             .then((response) => {
                 return response.text();
@@ -110,7 +110,35 @@
                     `   <code id="code">${text.replace(/['"]+/g, '')}</code>`,
                     '</div>',
                 ].join('');
+
+                var formBody = new FormData();
+                    formBody.append('cipher_text', document.getElementById('code').innerHTML);
+                    return fetch('/file', {
+                        method: 'POST',
+                        body: formBody
+                    });
             })
+            .then((response) => {
+                if(response){
+                    return response.blob();
+                }
+            })
+            .then((blob) => {
+                if(blob){
+                    
+                    result.innerHTML = result.innerHTML + [
+                        `<h5 class="mt-2">Cipher file</h5>`,
+                        '<hr>'
+                    ].join('');
+
+                    var link = document.createElement('a');
+                    link.className = "btn btn-primary";
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "encrypted one time pad";
+                    link.innerHTML = "download";
+                    result.appendChild(link);
+                }
+            });
         }
 
 

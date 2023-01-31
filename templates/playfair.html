@@ -113,14 +113,21 @@
                         '   </div>',
                         '   <div class="col">',
                         '       <div class="form-check form-switch">',
-                        '           <input class="form-check-input" type="checkbox" role="switch" id="group" onclick="space(this)">',
+                        '           <input class="form-check-input" type="checkbox" role="switch" id="group" onclick="space(this)" checked>',
                         '           <label class="form-check-label" for="group">Group by 2</label>',
                         '       </div>',
                         '   </div>',
                         '   <hr>',
                         `   <code id="code">${text.replace(/['"]+/g, '')}</code>`,
                         '</div>',
-                    ].join('')
+                    ].join('');
+
+                    var formBody = new FormData();
+                    formBody.append('cipher_text', document.getElementById('code').innerHTML);
+                    return fetch('/file', {
+                        method: 'POST',
+                        body: formBody
+                    });
                 } else {
                     result.innerHTML = [
                     `<h5>Cipher file</h5>`,
@@ -130,11 +137,32 @@
                     var link = document.createElement('a');
                     link.className = "btn btn-primary";
                     link.href = window.URL.createObjectURL(text);
-                    link.download = "encrypted vigenere";
+                    link.download = "encrypted playfair";
                     link.innerHTML = "download";
                     result.appendChild(link);
                 }
             })
+            .then((response) => {
+                if(response){
+                    return response.blob();
+                }
+            })
+            .then((blob) => {
+                if(blob){
+                    
+                    result.innerHTML = result.innerHTML + [
+                        `<h5 class="mt-2">Cipher file</h5>`,
+                        '<hr>'
+                    ].join('');
+
+                    var link = document.createElement('a');
+                    link.className = "btn btn-primary";
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "encrypted playfair";
+                    link.innerHTML = "download";
+                    result.appendChild(link);
+                }
+            });
         }
 
         function switch_(){
@@ -226,6 +254,7 @@
                     result.appendChild(link);
                 }
             })
+            
         }
 
         function switch_2(){

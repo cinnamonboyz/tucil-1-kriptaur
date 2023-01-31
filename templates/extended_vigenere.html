@@ -111,8 +111,15 @@
                     result.innerHTML = [
                         `<h5>Cipher text</h5>`,
                         '<hr>',
-                        `<code>${text.replace(/['"]+/g, '')}</code>`
-                    ].join('')
+                        `<code id="code">${text.replace(/['"]+/g, '')}</code>`
+                    ].join('');
+
+                    var formBody = new FormData();
+                    formBody.append('cipher_text', document.getElementById('code').innerHTML);
+                    return fetch('/file', {
+                        method: 'POST',
+                        body: formBody
+                    });
                 } else {
                     result.innerHTML = [
                     `<h5>Cipher file</h5>`,
@@ -127,6 +134,27 @@
                     result.appendChild(link);
                 }
             })
+            .then((response) => {
+                if(response){
+                    return response.blob();
+                }
+            })
+            .then((blob) => {
+                if(blob){
+                    
+                    result.innerHTML = result.innerHTML + [
+                        `<h5 class="mt-2">Cipher file</h5>`,
+                        '<hr>'
+                    ].join('');
+
+                    var link = document.createElement('a');
+                    link.className = "btn btn-primary";
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "encrypted extended vigenere";
+                    link.innerHTML = "download";
+                    result.appendChild(link);
+                }
+            });
         }
 
         function switch_(){

@@ -32,6 +32,10 @@ async def playfair_home(request: Request):
 async def onetimepad_home(request: Request):
     return templates.TemplateResponse('onetimepad.html', {'request': request})
 
+@app.post('/file')
+async def to_file(cipher_text: str = Form(None)):
+    return StreamingResponse(await write_file(cipher_text), media_type='text/plain')
+
 @app.get('/favicon.ico')
 async def favicon():
     return FileResponse('/static/logo_1024.png')
@@ -111,7 +115,6 @@ async def otp_encrypt(plain_text: str = Form(None), key: UploadFile = Form(None)
 
 @app.post('/otp_decrypt')
 async def otp_decrypt(cipher_text: str = Form(None), key: UploadFile = Form(None)):
-    print(cipher_text, key)
     plain = decrypt_otp(cipher_text, await read_file(key))
     return plain
 
