@@ -44,8 +44,20 @@ def extended_vigenere_decrypt(cipher_text, key):
     return plain
 
 if __name__ == "__main__":
-    cipher = extended_vigenere_encrypt("Saya ingin ke kampus besok", "KRIPTO")
+    cipher = extended_vigenere_encrypt("jeyy ganteng", "abc")
     print(cipher)
 
-    plain = extended_vigenere_decrypt(cipher, "KRIPTO")
+    plain = extended_vigenere_decrypt("«§¼ºbª¢°·¦°ª", "abc")
     print(plain)
+    #print(plain)
+    # with open("tucil 1/KTM.jpg", "rb") as save: 
+    #     cipher = extended_vigenere_encrypt(save.read().decode("latin-1"), "KRIPTO")
+    
+    # with open("tucil 1/encrypted.jpg", 'wb') as save:
+    #     save.write(cipher.encode('latin-1'))
+
+    # with open("tucil 1/encrypted.jpg", "rb") as save:
+    #     plain = extended_vigenere_decrypt(save.read().decode('latin-1'), "KRIPTO")
+
+    # with open("tucil 1/decrypted.jpg", "wb") as save:
+    #     save.write(plain.encode('latin-1'))

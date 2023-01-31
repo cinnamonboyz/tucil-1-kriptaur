@@ -19,6 +19,7 @@ def vigenere_decrypt(cipher_text, key):
     
     return plain
 
+
 if __name__ == "__main__":
     cipher = vigenere_encrypt("thisplaintext", "sony")
     print(cipher)

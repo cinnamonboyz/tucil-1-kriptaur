@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>One Time Pad</title>
+</head>
+<body>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4 col-sm-8 mb-5">
+                <h2 class="mb-3">One Time Pad Encrypt</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="form">
+                            <div id="input-text">
+                                <label for="plain_text">Plain text</label>
+                                <input type="text" name="plain_text" id="plain_text" class="form-control mb-2">
+                            </div>
+                            <button class="btn btn-success mt-2" type="button" onclick="submitForm()">Submit</button>
+                        </form>
+                        <div class="container mt-3" id="result">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-8">
+                <h2 class="mb-3">One Time Pad Decrypt</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="form_2">
+                            <div id="input-text_2">
+                                <label for="cipher_text">Cipher text</label>
+                                <input type="text" name="cipher_text" id="cipher_text" class="form-control mb-2">
+                            </div>
+                            <label for="key_2">Key</label>
+                            <input type="file" name="key" id="key_2" class="form-control mb-2" required>
+                            <button class="btn btn-success mt-2" type="button" onclick="submitForm_2()">Submit</button>
+                        </form>
+                        <div class="container mt-3" id="result_2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function submitForm(){
+            var form = document.getElementById('form');
+            var result = document.getElementById('result');
+
+            if(!form.checkValidity()){
+                return form.reportValidity();
+            }
+
+            var data = new FormData(form);
+
+            fetch('/create_key', {
+                method: 'POST',
+            })
+            .then(response => response.blob())
+            .then(key => {
+                var keyFile = new File([key], 'key.txt');
+                data.append('key', keyFile);
+
+                result.innerHTML = [
+                `<h5>Key</h5>`,
+                '<hr>',
+                ].join('');
+
+                var link = document.createElement('a');
+                link.className = "btn btn-secondary mb-3";
+                link.href = window.URL.createObjectURL(key);
+                link.download = "OTP key";
+                link.innerHTML = "Download Key";
+                result.appendChild(link);
+
+                var refresh = document.createElement('button');
+                refresh.type = "button";
+                refresh.className = "btn btn-warning mb-3 ms-2";
+                refresh.innerHTML = "Refresh Key";
+                refresh.setAttribute('onclick', 'submitForm()');
+                result.appendChild(refresh);
+                console.log(refresh);
+
+                return fetch('/otp_encrypt', {
+                    method: 'POST',
+                    body: data
+                })
+            })
+            .then((response) => {
+                return response.text();
+            })
+            .then((text) => {
+                result.innerHTML = result.innerHTML + [
+                    '<div class="row justify-content-evenly">',
+                    '   <div class="col">',
+                    `       <h5>Cipher text</h5>`,
+                    '   </div>',
+                    '   <div class="col">',
+                    '       <div class="form-check form-switch">',
+                    '           <input class="form-check-input" type="checkbox" role="switch" id="group" onclick="space(this)">',
+                    '           <label class="form-check-label" for="group">Group by 5</label>',
+                    '       </div>',
+                    '   </div>',
+                    '   <hr>',
+                    `   <code id="code">${text.replace(/['"]+/g, '')}</code>`,
+                    '</div>',
+                ].join('');
+            })
+        }
+
+
+        function submitForm_2(){
+            var form = document.getElementById('form_2');
+
+            if(!form.checkValidity()){
+                return form.reportValidity();
+            }
+
+            var data = new FormData(form);
+            fetch('/otp_decrypt', {
+                method: 'POST',
+                body: data
+            })
+            .then((response) => {
+                return response.text();
+            })
+            .then((text) => {
+                var result = document.getElementById('result_2');
+
+                result.innerHTML = [
+                    '<div class="row justify-content-evenly">',
+                    '   <div class="col">',
+                    '     <h5>Plain text</h5>',
+                    '   </div>',
+                    '   <div class="col">',
+                    '       <div class="form-check form-switch">',
+                    '           <input class="form-check-input" type="checkbox" role="switch" id="group-2" onclick="space(this, 1)">',
+                    '           <label class="form-check-label" for="group-2">Group by 5</label>',
+                    '       </div>',
+                    '   </div>',
+                    '   <hr>',
+                    `   <code id="code-2">${text.replace(/['"]+/g, '')}</code>`,
+                    '</div>',
+                ].join('');
+            })
+        }    
+
+        function space(obj, code=null){
+            if(code){
+                var result = document.getElementById('code-2');
+            } else {
+                var result = document.getElementById('code');
+            }
+            if(obj.checked){
+                result.innerHTML = result.innerHTML.replace(/.{5}/g, '$& ');
+            } else {
+                result.innerHTML = result.innerHTML.replace(/\s/g, '');
+            }
+        }
+    </script>
+</body>

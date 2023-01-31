@@ -22,7 +22,7 @@ def find_idx(bujur, first, second):
 
     return first_v[0], first_h[0], second_v[0], second_h[0]
 
-def extended_playfair_encrypt(plain_text: str, key: str):
+def playfair_encrypt(plain_text: str, key: str):
     key = key.upper().replace(' ', '').replace('J', '')
     bujur = create_bujur(key)
     plain = plain_text.upper().replace(' ', '').replace('J', 'I')
@@ -54,7 +54,7 @@ def extended_playfair_encrypt(plain_text: str, key: str):
 
     return ' '.join(''.join(gram) for gram in bigram)
 
-def extended_playfair_decrypt(cipher_text: str, key: str):
+def playfair_decrypt(cipher_text: str, key: str):
     key = key.upper().replace(' ', '').replace('J', '')
     bujur = create_bujur(key)
     cipher = cipher_text.upper().replace(' ', '')
@@ -77,8 +77,8 @@ def extended_playfair_decrypt(cipher_text: str, key: str):
 
 
 if __name__ == "__main__":
-    cipher = extended_playfair_encrypt("temui ibu nanti malam", "JALAN GANESHA SEPULUH")
+    cipher = playfair_encrypt("temui ibu nanti malam", "JALAN GANESHA SEPULUH")
     print(cipher)
 
-    plain = extended_playfair_decrypt(cipher, "JALAN GANESHA SEPULUH")
+    plain = playfair_decrypt(cipher, "JALAN GANESHA SEPULUH")
     print(plain)
