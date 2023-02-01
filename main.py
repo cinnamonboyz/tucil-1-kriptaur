@@ -112,6 +112,16 @@ async def playfair_decrypt_file(cipher_file: UploadFile = File(None), key: str =
 async def otp_encrypt(plain_text: str = Form(None), key: UploadFile = Form(None)):
     cipher = encrypt_otp(plain_text, await read_file(key))
     return cipher
+    
+@app.post('/otp_encrypt_file')
+async def otp_encrypt_file(plain_file: UploadFile = File(None), key: UploadFile = Form(None)):
+    cipher = encrypt_otp(await read_file(plain_file), await read_file(key))
+    return cipher
+
+@app.post('/otp_decrypt_file')
+async def otp_decrypt_file(cipher_file: UploadFile = File(None), key: UploadFile = Form(None)):
+    plain = decrypt_otp(await read_file(cipher_file), await read_file(key))
+    return plain
 
 @app.post('/otp_decrypt')
 async def otp_decrypt(cipher_text: str = Form(None), key: UploadFile = Form(None)):

@@ -15,9 +15,22 @@
                 <div class="card">
                     <div class="card-body">
                         <form id="form">
+                            <label>Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="type" id="text" onchange="switch_()" checked>
+                                <label class="form-check-label">Text</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="type" id="file" onchange="switch_()">
+                                <label class="form-check-label mb-2">File</label>
+                            </div>
                             <div id="input-text">
                                 <label for="plain_text">Plain text</label>
                                 <input type="text" name="plain_text" id="plain_text" class="form-control mb-2">
+                            </div>
+                            <div id="input-file" style="display: none;">
+                                <label for="plain_file">Plain file</label>
+                                <input type="file" name="plain_file" id="plain_file" class="form-control mb-2">
                             </div>
                             <button class="btn btn-success mt-2" type="button" onclick="submitForm()">Submit</button>
                         </form>
@@ -32,9 +45,22 @@
                 <div class="card">
                     <div class="card-body">
                         <form id="form_2">
+                            <label>Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="type" id="text_2" onchange="switch_2()" checked>
+                                <label class="form-check-label">Text</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="type" id="file_2" onchange="switch_2()">
+                                <label class="form-check-label mb-2">File</label>
+                            </div>
                             <div id="input-text_2">
                                 <label for="cipher_text">Cipher text</label>
                                 <input type="text" name="cipher_text" id="cipher_text" class="form-control mb-2">
+                            </div>
+                            <div id="input-file_2" style="display: none;">
+                                <label for="cipher_file">Cipher file</label>
+                                <input type="file" name="cipher_file" id="cipher_file" class="form-control mb-2">
                             </div>
                             <label for="key_2">Key</label>
                             <input type="file" name="key" id="key_2" class="form-control mb-2" required>
@@ -56,6 +82,7 @@
                 return form.reportValidity();
             }
 
+            var radio_text = document.getElementById('text');
             var data = new FormData(form);
 
             fetch('/create_key', {
@@ -86,7 +113,12 @@
                 result.appendChild(refresh);
                 console.log(refresh);
 
-                return fetch('/otp_encrypt', {
+                if (radio_text.checked){
+                    var route = '/otp_encrypt';
+                } else {
+                    var route = '/otp_encrypt_file';
+                }
+                return fetch(route, {
                     method: 'POST',
                     body: data
                 });
@@ -96,7 +128,7 @@
             })
             .then((text) => {
                 result.innerHTML = result.innerHTML + [
-                    '<div class="row justify-content-evenly">',
+                    '<div class="row justify-content-evenly" id="cipher-text">',
                     '   <div class="col">',
                     `       <h5>Cipher text</h5>`,
                     '   </div>',
@@ -112,11 +144,11 @@
                 ].join('');
 
                 var formBody = new FormData();
-                    formBody.append('cipher_text', document.getElementById('code').innerHTML);
-                    return fetch('/file', {
-                        method: 'POST',
-                        body: formBody
-                    });
+                formBody.append('cipher_text', document.getElementById('code').innerHTML);
+                return fetch('/file', {
+                    method: 'POST',
+                    body: formBody
+                });
             })
             .then((response) => {
                 if(response){
@@ -125,7 +157,9 @@
             })
             .then((blob) => {
                 if(blob){
-                    
+                    if (!radio_text.checked){
+                     document.getElementById('cipher-text').remove();
+                    }
                     result.innerHTML = result.innerHTML + [
                         `<h5 class="mt-2">Cipher file</h5>`,
                         '<hr>'
@@ -141,6 +175,17 @@
             });
         }
 
+        function switch_(){
+            var radio_text = document.getElementById('text');
+            if(radio_text.checked){
+                document.getElementById('input-file').style.display = 'none';
+                document.getElementById('input-text').style.display = 'block';
+            } else {
+                document.getElementById('input-file').style.display = 'block';
+                document.getElementById('input-text').style.display = 'none';
+            }
+            document.getElementById('result').innerHTML = "";
+        }
 
         function submitForm_2(){
             var form = document.getElementById('form_2');
@@ -149,8 +194,15 @@
                 return form.reportValidity();
             }
 
+            var radio_text = document.getElementById('text_2');
             var data = new FormData(form);
-            fetch('/otp_decrypt', {
+
+            if (radio_text.checked){
+                var route = '/otp_decrypt';
+            } else {
+                var route = '/otp_decrypt_file';
+            }
+            fetch(route, {
                 method: 'POST',
                 body: data
             })
@@ -161,7 +213,7 @@
                 var result = document.getElementById('result_2');
 
                 result.innerHTML = [
-                    '<div class="row justify-content-evenly">',
+                    '<div class="row justify-content-evenly" id="plain-text">',
                     '   <div class="col">',
                     '     <h5>Plain text</h5>',
                     '   </div>',
@@ -175,8 +227,48 @@
                     `   <code id="code-2">${text.replace(/['"]+/g, '')}</code>`,
                     '</div>',
                 ].join('');
+
+                var formBody = new FormData();
+                formBody.append('cipher_text', document.getElementById('code-2').innerHTML);
+                return fetch('/file', {
+                    method: 'POST',
+                    body: formBody
+                });
             })
+            .then((response) => {
+                return response.blob();
+            })
+            .then((blob) => {
+                var result = document.getElementById('result_2');
+                if (!radio_text.checked){
+                    document.getElementById('plain-text').remove();
+                   
+                    result.innerHTML = result.innerHTML + [
+                        `<h5 class="mt-2">Cipher file</h5>`,
+                        '<hr>'
+                    ].join('');
+
+                    var link = document.createElement('a');
+                    link.className = "btn btn-primary";
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "decrypted one time pad";
+                    link.innerHTML = "download";
+                    result.appendChild(link);
+                }
+            });
         }    
+
+        function switch_2(){
+            var radio_text = document.getElementById('text_2');
+            if(radio_text.checked){
+                document.getElementById('input-file_2').style.display = 'none';
+                document.getElementById('input-text_2').style.display = 'block';
+            } else {
+                document.getElementById('input-file_2').style.display = 'block';
+                document.getElementById('input-text_2').style.display = 'none';
+            }
+            document.getElementById('result_2').innerHTML = "";
+        }
 
         function space(obj, code=null){
             if(code){
