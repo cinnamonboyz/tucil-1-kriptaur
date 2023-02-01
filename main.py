@@ -6,6 +6,7 @@ from algo.onetimepad import decrypt_otp, encrypt_otp, generate_random_key
 from algo.playfair import playfair_decrypt, playfair_encrypt
 from algo.vigenere import vigenere_decrypt, vigenere_encrypt
 from algo.vigenere_extended import extended_vigenere_decrypt, extended_vigenere_encrypt
+from algo.enigma import enigma
 
 from util import read_file, write_file
 
@@ -31,6 +32,10 @@ async def playfair_home(request: Request):
 @app.get('/onetimepad')
 async def onetimepad_home(request: Request):
     return templates.TemplateResponse('onetimepad.html', {'request': request})
+
+@app.get('/enigma')
+async def enigma_home(request: Request):
+    return templates.TemplateResponse('enigma.html', {'request': request})
 
 @app.post('/file')
 async def to_file(cipher_text: str = Form(None)):
@@ -131,3 +136,15 @@ async def otp_decrypt(cipher_text: str = Form(None), key: UploadFile = Form(None
 @app.post('/create_key')
 async def create_key():
     return StreamingResponse(await write_file(generate_random_key(10000)), media_type='text/plain')
+
+
+# enigma
+@app.post('/enigma_text')
+async def enigma_text(text: str = Form(None), key_1: str = Form(None), key_2: str = Form(None), key_3: str = Form(None)):
+    result = enigma(text, key_1 + key_2 + key_3)
+    return result
+
+@app.post('/enigma_file')
+async def enigma_text(files: UploadFile = File(None), key_1: str = Form(None), key_2: str = Form(None), key_3: str = Form(None)):
+    result = enigma(await read_file(files), key_1 + key_2 + key_3)
+    return StreamingResponse(await write_file(result), media_type='text/plain')
