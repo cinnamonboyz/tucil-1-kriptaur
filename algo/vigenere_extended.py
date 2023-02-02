@@ -1,29 +1,3 @@
-# def extended_vigenere_encrypt(plain_text, key): 
-#     plain_text = plain_text.replace(' ', '').upper()
-#     key = key.upper()
-
-#     cipher = b''
-#     for i, plain_char in enumerate(plain_text):
-#         key_char = key[i % len(key)]
-#         cipher += chr((ord(plain_char) + ord(key_char)) % 256).encode('latin-1')
-        
-#     return cipher
-
-# def extended_vigenere_decrypt(cipher_text, key):
-#     key = key.upper()
-
-#     plain = b''
-#     for i, cipher_char in enumerate(cipher_text):
-#         key_char = key[i % len(key)]
-#         plain += chr((cipher_char - ord(key_char)) % 256).encode('latin-1')
-#     return plain
-
-# if __name__ == "__main__":
-#     cipher = extended_vigenere_encrypt("halo kriptografi", "loremipsum")
-#     print(cipher)
-#     plain = extended_vigenere_decrypt(cipher, "loremipsum")
-#     print(plain)
-
 def extended_vigenere_encrypt(plain_text, key):
     key = key.upper()
 

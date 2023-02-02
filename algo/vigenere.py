@@ -4,8 +4,8 @@ def vigenere_encrypt(plain_text, key):
 
     cipher = ""
     for i, plain_char in enumerate(plain_text):
-        key_char = key[i%len(key)] # buat nge korespondenin si key sama plaintextnya n jadi bisa berulang
-        cipher += chr(((ord(plain_char) + ord(key_char)) % 26 + ord('A'))) # ditambah ord(A) karena buat kalibrasi
+        key_char = key[i%len(key)]
+        cipher += chr(((ord(plain_char) + ord(key_char)) % 26 + ord('A')))
     return cipher
 
 def vigenere_decrypt(cipher_text, key):
@@ -18,7 +18,6 @@ def vigenere_decrypt(cipher_text, key):
         plain += chr(((ord(cipher_char) - ord(key_char)) % 26 + ord('A')))
     
     return plain
-
 
 if __name__ == "__main__":
     cipher = vigenere_encrypt("thisplaintext", "sony")
