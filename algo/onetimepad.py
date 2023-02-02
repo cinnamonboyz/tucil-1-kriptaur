@@ -1,6 +1,8 @@
 import string
 import random
 
+from util import clean
+
 def chartonum(input):
     output = []
     for character in input:
@@ -34,6 +36,9 @@ def read_key(filename):
     return key
 
 def encrypt_otp(plainteks, key):
+    plainteks = clean(plainteks)
+    key = clean(key)
+
     p = chartonum(plainteks)
     k = chartonum(key)
     ciphertext = []
@@ -44,6 +49,9 @@ def encrypt_otp(plainteks, key):
     return ''.join(ciphertext)
 
 def decrypt_otp(ciphertext, key):
+    ciphertext = clean(ciphertext)
+    key = clean(key)
+
     c = chartonum(ciphertext)
     k = chartonum(key)
     plainteks = []

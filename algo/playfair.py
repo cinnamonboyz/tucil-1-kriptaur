@@ -1,4 +1,5 @@
 import numpy as np
+from util import clean
 
 ABJAD = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -23,9 +24,9 @@ def find_idx(bujur, first, second):
     return first_v[0], first_h[0], second_v[0], second_h[0]
 
 def playfair_encrypt(plain_text: str, key: str):
-    key = key.upper().replace(' ', '').replace('J', '')
+    key = clean(key).replace('J', '') 
     bujur = create_bujur(key)
-    plain = plain_text.upper().replace(' ', '').replace('J', 'I')
+    plain = clean(plain_text).replace('J', 'I')
 
     i = 0
     while i < len(plain):
@@ -55,9 +56,10 @@ def playfair_encrypt(plain_text: str, key: str):
     return ' '.join(''.join(gram) for gram in bigram)
 
 def playfair_decrypt(cipher_text: str, key: str):
-    key = key.upper().replace(' ', '').replace('J', '')
+    key = clean(key).replace('J', '')
     bujur = create_bujur(key)
-    cipher = cipher_text.upper().replace(' ', '')
+    cipher = clean(cipher_text)
+
 
     bigram = [[cipher[i], cipher[i+1]] for i in range(0, len(cipher), 2)]
     for i, (first, second) in enumerate(bigram):
