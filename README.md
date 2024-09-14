@@ -26,5 +26,5 @@ Ragam cipher yang berhasil diimplementasikan pada program ini yaitu:
 1. Clone repositori ini
 2. Buka file main.py
 3. Jalankan dengan mengetikkan uvicorn main:app di terminal
-4. Akses IP Adress yang muncul (http://127.0.0.1:8000/)
+4. Akses IP Adress yang muncul
 5. Pilih dan eksplorasi ragam cipher yang ingin dicoba pada program
