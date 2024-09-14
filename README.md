@@ -1,4 +1,4 @@
-# Tugas Kecil 1: Ragam Cipher Klasik
+# Ragam Cipher Klasik
 ## II4031 Kriptografi dan Koding
 - 18220012 Fikri Muhammad Fahreza
 - 18220086 Aldi Fadlian Sunan
